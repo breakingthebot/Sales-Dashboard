@@ -95,3 +95,9 @@
 ### Added
 
 - Added a deployment guide with pre-deploy checks, Streamlit hosting notes, and post-deploy validation steps.
+
+## Iteration 11 - 2026-06-08
+
+### Added
+
+- Added README topic notes explaining how each GitHub topic applies to the build.

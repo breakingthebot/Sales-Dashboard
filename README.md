@@ -25,6 +25,25 @@ The point of this build is to make raw sales records easier to understand quickl
 - Provides in-app downloads for a blank CSV template and generated sample data.
 - Includes unit tests for loading, validation, and core analytics.
 
+## Topic Notes
+
+These are the main GitHub topics for this project and how each one applies:
+
+| Topic | How it is used |
+| --- | --- |
+| `python` | Main language for the dashboard, scripts, services, and tests. |
+| `streamlit` | Powers the interactive app for CSV upload, filters, charts, and downloads. |
+| `pandas` | Loads CSV files, validates data, calculates metrics, and builds summary tables. |
+| `matplotlib` | Generates charts for trends, products, categories, and regions. |
+| `data-analysis` | Turns sales rows into KPIs, grouped summaries, and product rankings. |
+| `sales-dashboard` | Describes the main purpose: a dashboard for understanding sales CSV data. |
+| `csv` | Used for input files, templates, generated test data, uploaded data, and exports. |
+| `data-visualization` | Uses charts and dashboard visuals to make sales patterns easier to read. |
+| `dashboard` | Includes both a static HTML dashboard and an interactive Streamlit dashboard. |
+| `data-quality` | Checks for missing columns, bad dates, invalid values, duplicates, and pricing issues. |
+| `unit-testing` | Verifies loading, analysis, filtering, exports, column mapping, generation, and quality checks. |
+| `github-actions` | Runs automated tests and dashboard generation on GitHub. |
+
 ## Project Structure
 
 ```text
@@ -264,6 +283,12 @@ See `CHANGELOG.md`.
 2. Confirm it lists `streamlit_app.py` as the app entry point.
 3. Confirm it includes pre-deploy and post-deploy validation steps.
 4. Run `python -m unittest discover -s tests`.
+
+## Iteration 10 Test Steps
+
+1. Open `README.md`.
+2. Confirm the `Topic Notes` section explains each GitHub topic.
+3. Run `python -m unittest discover -s tests`.
 
 ## Next Iteration Suggestions
 
