@@ -4,6 +4,8 @@ A Python data project that turns a sales CSV into a static dashboard with summar
 
 The point of this build is to make raw sales records easier to understand quickly. Instead of reading rows in a spreadsheet, the script validates the data, calculates the most useful sales metrics, and produces a clean report that can be opened in any browser.
 
+![Sales Dashboard Streamlit workflow](docs/assets/streamlit-workflow.png)
+
 ## Stack
 
 - Python
@@ -34,6 +36,10 @@ The point of this build is to make raw sales records easier to understand quickl
 |   `-- utils/
 |-- data/
 |   `-- sample_sales.csv
+|-- docs/
+|   `-- assets/
+|-- scripts/
+|   `-- create_readme_assets.py
 |-- tests/
 |   `-- test_sales_dashboard.py
 |-- sales_dashboard.py
@@ -218,7 +224,14 @@ See `CHANGELOG.md`.
 6. Upload the generated sample CSV back into the app.
 7. Confirm the dashboard loads without manual column mapping.
 
+## Iteration 7 Test Steps
+
+1. Run `python scripts/create_readme_assets.py`.
+2. Confirm `docs/assets/streamlit-workflow.png` is generated.
+3. Open `README.md` in GitHub preview or VS Code preview.
+4. Confirm the Streamlit workflow image renders near the top of the README.
+
 ## Next Iteration Suggestions
 
 - Add GitHub Actions so tests run automatically on every push.
-- Add a small README screenshot or demo GIF for the Streamlit workflow.
+- Add a short deployed-app section once the app has a public URL.

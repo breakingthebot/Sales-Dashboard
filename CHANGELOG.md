@@ -69,3 +69,10 @@
 
 - Added Streamlit sidebar downloads for a blank sales CSV template and generated sample sales data.
 - Added a test that confirms the in-app generated sample data validates successfully.
+
+## Iteration 7 - 2026-06-08
+
+### Added
+
+- Added a README workflow image for the Streamlit dashboard experience.
+- Added a script for regenerating README visual assets.
