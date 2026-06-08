@@ -20,6 +20,7 @@ The point of this build is to make raw sales records easier to understand quickl
 - Builds monthly revenue trends, top product rankings, category mix, and regional revenue charts.
 - Generates a responsive `index.html` report.
 - Exports filtered rows, summary tables, and dashboard charts from the interactive app.
+- Provides in-app downloads for a blank CSV template and generated sample data.
 - Includes unit tests for loading, validation, and core analytics.
 
 ## Project Structure
@@ -207,7 +208,17 @@ See `CHANGELOG.md`.
 11. Upload a CSV with different column names and map each field in the column mapping panel.
 12. Confirm the dashboard loads after mapping.
 
+## Iteration 6 Test Steps
+
+1. Run `python -m unittest discover -s tests`.
+2. Run `streamlit run streamlit_app.py`.
+3. Download `Blank template CSV` from the sidebar.
+4. Confirm it contains only the required dashboard headers.
+5. Download `Generated sample CSV` from the sidebar.
+6. Upload the generated sample CSV back into the app.
+7. Confirm the dashboard loads without manual column mapping.
+
 ## Next Iteration Suggestions
 
 - Add GitHub Actions so tests run automatically on every push.
-- Add an in-app download button for generated sample data and the blank sales CSV template.
+- Add a small README screenshot or demo GIF for the Streamlit workflow.

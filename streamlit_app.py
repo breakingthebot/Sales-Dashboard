@@ -26,6 +26,12 @@ from src.services.column_mapping import (
 from src.services.data_quality import analyze_sales_quality
 from src.services.data_loader import validate_sales_data
 from src.services.exporting import dataframe_to_csv_bytes, figure_to_png_bytes
+from src.services.template_generator import (
+    DEFAULT_APP_DOWNLOAD_ROW_COUNT,
+    DEFAULT_APP_DOWNLOAD_SEED,
+    build_random_sales_dataframe,
+    build_template_dataframe,
+)
 from src.utils.formatting import currency
 
 
@@ -53,6 +59,36 @@ def load_uploaded_raw_data(uploaded_file) -> pd.DataFrame:
     """
 
     return pd.read_csv(uploaded_file)
+
+
+def render_input_downloads() -> None:
+    """Render sidebar downloads for upload-ready sales CSV files.
+
+    Parameters:
+        None.
+
+    Returns:
+        None.
+    """
+
+    st.sidebar.header("Input Files")
+    st.sidebar.download_button(
+        "Blank template CSV",
+        data=dataframe_to_csv_bytes(build_template_dataframe()),
+        file_name="sales_template.csv",
+        mime="text/csv",
+    )
+    st.sidebar.download_button(
+        "Generated sample CSV",
+        data=dataframe_to_csv_bytes(
+            build_random_sales_dataframe(
+                DEFAULT_APP_DOWNLOAD_ROW_COUNT,
+                DEFAULT_APP_DOWNLOAD_SEED,
+            )
+        ),
+        file_name="generated_sales_sample.csv",
+        mime="text/csv",
+    )
 
 
 def render_quality_report(raw_df: pd.DataFrame) -> None:
@@ -262,6 +298,7 @@ def main() -> None:
     st.title("Sales Dashboard")
     st.caption("Upload a CSV or explore the bundled sample data.")
 
+    render_input_downloads()
     uploaded_file = st.sidebar.file_uploader("Upload sales CSV", type=["csv"])
     try:
         raw_df = (

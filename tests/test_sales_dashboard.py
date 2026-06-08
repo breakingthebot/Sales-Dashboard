@@ -15,6 +15,7 @@ from src.services.exporting import dataframe_to_csv_bytes, figure_to_png_bytes
 from src.services.charts import create_monthly_chart
 from src.services.template_generator import build_template_dataframe, generate_sales_template
 from src.services.template_generator import build_random_sales_dataframe, generate_random_sales_csv
+from src.services.template_generator import DEFAULT_APP_DOWNLOAD_ROW_COUNT, DEFAULT_APP_DOWNLOAD_SEED
 
 
 class SalesDashboardTestCase(unittest.TestCase):
@@ -246,6 +247,15 @@ class SalesDashboardTestCase(unittest.TestCase):
 
         self.assertEqual(generated_path, output_path)
         self.assertEqual(len(pd.read_csv(output_path)), 5)
+
+    def test_app_download_sample_data_is_valid(self):
+        generated = build_random_sales_dataframe(
+            DEFAULT_APP_DOWNLOAD_ROW_COUNT,
+            DEFAULT_APP_DOWNLOAD_SEED,
+        )
+
+        self.assertEqual(len(generated), DEFAULT_APP_DOWNLOAD_ROW_COUNT)
+        self.assertFalse(validate_sales_data(generated).empty)
 
 
 if __name__ == "__main__":

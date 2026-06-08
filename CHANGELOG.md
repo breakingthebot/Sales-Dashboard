@@ -62,3 +62,10 @@
 - Added a random sales CSV generator script for upload testing.
 - Added support for row counts, optional random seeds, and blank templates.
 - Added tests for column mapping and template generation.
+
+## Iteration 6 - 2026-06-08
+
+### Added
+
+- Added Streamlit sidebar downloads for a blank sales CSV template and generated sample sales data.
+- Added a test that confirms the in-app generated sample data validates successfully.
