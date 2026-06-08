@@ -23,3 +23,11 @@
 
 - Updated the monthly revenue chart to plot real datetime values instead of date-like strings.
 - Removed noisy matplotlib category logging during dashboard generation.
+
+## Iteration 2 - 2026-06-08
+
+### Added
+
+- Added a GitHub Actions workflow for automated checks on pushes and pull requests to `main`.
+- Added CI coverage for dependency installation, unit tests, and dashboard generation.
+- Documented the automated check workflow and test steps.

@@ -10,6 +10,7 @@ The point of this build is to make raw sales records easier to understand quickl
 - pandas
 - matplotlib
 - unittest
+- GitHub Actions
 
 ## Features
 
@@ -28,6 +29,8 @@ The point of this build is to make raw sales records easier to understand quickl
 |   |-- models/
 |   |-- services/
 |   `-- utils/
+|-- .github/
+|   `-- workflows/
 |-- data/
 |   `-- sample_sales.csv
 |-- tests/
@@ -92,6 +95,10 @@ python sales_dashboard.py --csv path\to\sales.csv --output reports\custom_dashbo
 python -m unittest discover -s tests
 ```
 
+## Automated Checks
+
+GitHub Actions runs the test workflow on branch pushes and pull requests to `main`. The workflow installs dependencies, runs the unit tests, and generates the dashboard to confirm the command-line build still works.
+
 ## Deployed
 
 Not deployed. This build currently generates a local static HTML report.
@@ -128,9 +135,16 @@ See `CHANGELOG.md`.
 3. Confirm the terminal no longer shows `matplotlib.category` INFO messages.
 4. Open the dashboard and confirm the monthly revenue chart still uses readable month labels.
 
+## Iteration 2 Test Steps
+
+1. Run `python -m unittest discover -s tests`.
+2. Run `python sales_dashboard.py`.
+3. Commit and push the workflow file.
+4. Open the GitHub repository Actions tab.
+5. Confirm the `Tests` workflow completes successfully.
+
 ## Next Iteration Suggestions
 
 - Add an interactive Streamlit interface with CSV upload, filters for date range and region, and live chart updates.
 - Add export options for dashboard images and summary tables.
 - Add a richer data quality report for missing values, negative quantities, duplicate order IDs, and outlier prices.
-- Add GitHub Actions so tests run automatically on every push.
