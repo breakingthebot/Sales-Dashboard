@@ -9,6 +9,8 @@ from src.components.filters import apply_sales_filters
 from src.services.analysis import monthly_revenue, summarize_sales, top_products
 from src.services.data_quality import analyze_sales_quality
 from src.services.data_loader import load_sales_data, validate_sales_data
+from src.services.exporting import dataframe_to_csv_bytes, figure_to_png_bytes
+from src.services.charts import create_monthly_chart
 
 
 class SalesDashboardTestCase(unittest.TestCase):
@@ -151,6 +153,22 @@ class SalesDashboardTestCase(unittest.TestCase):
 
         self.assertEqual(required_columns["status"], "Review")
         self.assertGreater(required_columns["issues"], 0)
+
+    def test_dataframe_to_csv_bytes_exports_headers_and_rows(self):
+        csv_bytes = dataframe_to_csv_bytes(pd.DataFrame([{"product": "Laptop", "revenue": 2000}]))
+
+        self.assertIn(b"product,revenue", csv_bytes)
+        self.assertIn(b"Laptop,2000", csv_bytes)
+
+    def test_figure_to_png_bytes_exports_png_content(self):
+        path = self.write_csv(
+            "order_date,order_id,product,category,region,quantity,unit_price\n"
+            "2025-01-01,SO-1,Laptop,Computers,West,2,1000\n"
+        )
+
+        png_bytes = figure_to_png_bytes(create_monthly_chart(load_sales_data(path)))
+
+        self.assertTrue(png_bytes.startswith(b"\x89PNG"))
 
 
 if __name__ == "__main__":

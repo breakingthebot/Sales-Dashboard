@@ -19,6 +19,7 @@ from src.services.charts import (
 )
 from src.services.data_quality import analyze_sales_quality
 from src.services.data_loader import validate_sales_data
+from src.services.exporting import dataframe_to_csv_bytes, figure_to_png_bytes
 from src.utils.formatting import currency
 
 
@@ -67,6 +68,12 @@ def render_quality_report(raw_df: pd.DataFrame) -> None:
 
     with st.expander("Data quality report", expanded=issue_count > 0):
         st.dataframe(report, use_container_width=True)
+        st.download_button(
+            "Download quality report CSV",
+            data=dataframe_to_csv_bytes(report),
+            file_name="sales_data_quality_report.csv",
+            mime="text/csv",
+        )
 
 
 def render_metrics(df: pd.DataFrame) -> None:
@@ -86,6 +93,37 @@ def render_metrics(df: pd.DataFrame) -> None:
     columns[2].metric("Units", f"{summary['total_units']:,}")
     columns[3].metric("Avg Order", currency(summary["avg_order_value"]))
     columns[4].metric("Top Product", str(summary["top_product"]))
+
+
+def render_exports(df: pd.DataFrame) -> None:
+    """Render sidebar export buttons for filtered dashboard tables.
+
+    Parameters:
+        df: Filtered sales DataFrame.
+
+    Returns:
+        None.
+    """
+
+    st.sidebar.header("Exports")
+    st.sidebar.download_button(
+        "Filtered rows CSV",
+        data=dataframe_to_csv_bytes(df),
+        file_name="filtered_sales_rows.csv",
+        mime="text/csv",
+    )
+    st.sidebar.download_button(
+        "Top products CSV",
+        data=dataframe_to_csv_bytes(top_products(df, DEFAULT_TOP_PRODUCT_LIMIT)),
+        file_name="top_products.csv",
+        mime="text/csv",
+    )
+    st.sidebar.download_button(
+        "Region revenue CSV",
+        data=dataframe_to_csv_bytes(revenue_breakdown(df, "region")),
+        file_name="region_revenue.csv",
+        mime="text/csv",
+    )
 
 
 def render_sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
@@ -151,6 +189,27 @@ def render_tables(df: pd.DataFrame) -> None:
         st.dataframe(revenue_breakdown(df, "region"), use_container_width=True)
 
 
+def render_chart_download(label: str, file_name: str, fig) -> None:
+    """Render a chart and matching PNG download button.
+
+    Parameters:
+        label: Button label.
+        file_name: Downloaded image filename.
+        fig: Matplotlib figure to render and export.
+
+    Returns:
+        None.
+    """
+
+    st.pyplot(fig)
+    st.download_button(
+        label,
+        data=figure_to_png_bytes(fig),
+        file_name=file_name,
+        mime="image/png",
+    )
+
+
 def main() -> None:
     """Run the Streamlit dashboard app.
 
@@ -184,14 +243,31 @@ def main() -> None:
         return
 
     render_metrics(filtered)
-    st.pyplot(create_monthly_chart(filtered))
+    render_exports(filtered)
+    render_chart_download(
+        "Download monthly chart PNG",
+        "monthly_revenue.png",
+        create_monthly_chart(filtered),
+    )
 
     left, right = st.columns(2)
     with left:
-        st.pyplot(create_top_products_chart(filtered, DEFAULT_TOP_PRODUCT_LIMIT))
-        st.pyplot(create_region_chart(filtered))
+        render_chart_download(
+            "Download top products chart PNG",
+            "top_products.png",
+            create_top_products_chart(filtered, DEFAULT_TOP_PRODUCT_LIMIT),
+        )
+        render_chart_download(
+            "Download region chart PNG",
+            "region_revenue.png",
+            create_region_chart(filtered),
+        )
     with right:
-        st.pyplot(create_category_chart(filtered))
+        render_chart_download(
+            "Download category chart PNG",
+            "category_mix.png",
+            create_category_chart(filtered),
+        )
         render_tables(filtered)
 
 

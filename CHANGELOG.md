@@ -45,3 +45,11 @@
 - Added checks for missing required columns, blank required values, invalid dates, invalid numbers, negative quantities, nonpositive unit prices, duplicate order IDs, and invalid revenue values.
 - Added Streamlit display for the data quality report.
 - Added tests for data quality issue detection.
+
+## Iteration 4 - 2026-06-08
+
+### Added
+
+- Added CSV exports for filtered rows, top products, region revenue, and the data quality report.
+- Added PNG exports for monthly revenue, top products, category mix, and region revenue charts.
+- Added reusable export helpers and tests for CSV and PNG export output.
