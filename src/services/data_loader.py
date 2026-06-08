@@ -14,25 +14,19 @@ from src.config.settings import REQUIRED_COLUMNS
 logger = logging.getLogger(__name__)
 
 
-def load_sales_data(csv_path: Path) -> pd.DataFrame:
-    """Load, validate, and enrich a sales CSV.
+def validate_sales_data(df: pd.DataFrame) -> pd.DataFrame:
+    """Validate and enrich raw sales data.
 
     Parameters:
-        csv_path: Path to the CSV file.
+        df: Raw sales DataFrame.
 
     Returns:
         DataFrame with parsed dates, numeric fields, revenue, and month columns.
 
     Raises:
-        FileNotFoundError: If the CSV path does not exist.
         ValueError: If required columns or values are invalid.
     """
 
-    logger.info("Loading sales CSV from %s", csv_path)
-    if not csv_path.exists():
-        raise FileNotFoundError(f"CSV file not found: {csv_path}")
-
-    df = pd.read_csv(csv_path)
     missing_columns = REQUIRED_COLUMNS - set(df.columns)
     if missing_columns:
         missing = ", ".join(sorted(missing_columns))
@@ -56,5 +50,27 @@ def load_sales_data(csv_path: Path) -> pd.DataFrame:
         df["revenue"] = df["quantity"] * df["unit_price"]
 
     df["month"] = df["order_date"].dt.to_period("M").dt.to_timestamp()
-    logger.info("Loaded %s sales rows", len(df))
     return df.sort_values("order_date").reset_index(drop=True)
+
+
+def load_sales_data(csv_path: Path) -> pd.DataFrame:
+    """Load, validate, and enrich a sales CSV from disk.
+
+    Parameters:
+        csv_path: Path to the CSV file.
+
+    Returns:
+        DataFrame with parsed dates, numeric fields, revenue, and month columns.
+
+    Raises:
+        FileNotFoundError: If the CSV path does not exist.
+        ValueError: If required columns or values are invalid.
+    """
+
+    logger.info("Loading sales CSV from %s", csv_path)
+    if not csv_path.exists():
+        raise FileNotFoundError(f"CSV file not found: {csv_path}")
+
+    df = validate_sales_data(pd.read_csv(csv_path))
+    logger.info("Loaded %s sales rows", len(df))
+    return df

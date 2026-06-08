@@ -23,3 +23,16 @@
 
 - Updated the monthly revenue chart to plot real datetime values instead of date-like strings.
 - Removed noisy matplotlib category logging during dashboard generation.
+
+## Iteration 2 - 2026-06-08
+
+### Added
+
+- Added an interactive Streamlit dashboard.
+- Added CSV upload support for interactive analysis.
+- Added date, category, region, and product filters.
+- Added reusable filter logic and tests.
+
+### Changed
+
+- Updated chart functions so the static report and Streamlit app can reuse the same matplotlib figure builders.

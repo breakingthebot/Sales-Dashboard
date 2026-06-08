@@ -1,11 +1,13 @@
 from pathlib import Path
+from datetime import date
 import tempfile
 import unittest
 
 import pandas as pd
 
+from src.components.filters import apply_sales_filters
 from src.services.analysis import monthly_revenue, summarize_sales, top_products
-from src.services.data_loader import load_sales_data
+from src.services.data_loader import load_sales_data, validate_sales_data
 
 
 class SalesDashboardTestCase(unittest.TestCase):
@@ -71,6 +73,44 @@ class SalesDashboardTestCase(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "missing required columns"):
             load_sales_data(path)
+
+    def test_validate_sales_data_accepts_dataframe_input(self):
+        df = pd.DataFrame(
+            [
+                {
+                    "order_date": "2025-01-01",
+                    "order_id": "SO-1",
+                    "product": "Laptop",
+                    "category": "Computers",
+                    "region": "West",
+                    "quantity": 2,
+                    "unit_price": 1000,
+                }
+            ]
+        )
+
+        validated = validate_sales_data(df)
+
+        self.assertEqual(validated.loc[0, "revenue"], 2000)
+
+    def test_apply_sales_filters_filters_by_selected_values(self):
+        path = self.write_csv(
+            "order_date,order_id,product,category,region,quantity,unit_price\n"
+            "2025-01-01,SO-1,Laptop,Computers,West,2,1000\n"
+            "2025-02-01,SO-2,Mouse,Accessories,East,5,20\n"
+            "2025-03-01,SO-3,Desk,Furniture,North,1,500\n"
+        )
+
+        filtered = apply_sales_filters(
+            load_sales_data(path),
+            start_date=date(2025, 1, 1),
+            end_date=date(2025, 2, 28),
+            categories=["Accessories"],
+            regions=["East"],
+            products=["Mouse"],
+        )
+
+        self.assertEqual(filtered["order_id"].tolist(), ["SO-2"])
 
 
 if __name__ == "__main__":

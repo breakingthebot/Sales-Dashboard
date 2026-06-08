@@ -9,6 +9,7 @@ The point of this build is to make raw sales records easier to understand quickl
 - Python
 - pandas
 - matplotlib
+- Streamlit
 - unittest
 
 ## Features
@@ -33,6 +34,7 @@ The point of this build is to make raw sales records easier to understand quickl
 |-- tests/
 |   `-- test_sales_dashboard.py
 |-- sales_dashboard.py
+|-- streamlit_app.py
 |-- CHANGELOG.md
 |-- .env.example
 |-- requirements.txt
@@ -70,6 +72,8 @@ pip install -r requirements.txt
 
 ## Running Locally
 
+Generate the static dashboard:
+
 ```powershell
 python sales_dashboard.py
 ```
@@ -86,6 +90,12 @@ To use a custom CSV:
 python sales_dashboard.py --csv path\to\sales.csv --output reports\custom_dashboard --top-n 10
 ```
 
+Run the interactive dashboard:
+
+```powershell
+streamlit run streamlit_app.py
+```
+
 ## Testing
 
 ```powershell
@@ -98,9 +108,9 @@ Not deployed. This build currently generates a local static HTML report.
 
 ## Architecture Notes
 
-The build is split into small modules so each part has one job. CSV validation lives in the data loader, sales calculations live in the analysis service, chart rendering lives in the charts service, and report creation lives in the report service. The root `sales_dashboard.py` file stays small so it only starts the command-line workflow.
+The build is split into small modules so each part has one job. CSV validation lives in the data loader, sales calculations live in the analysis service, chart rendering lives in the charts service, filtering lives in a small component helper, and report creation lives in the report service. The root `sales_dashboard.py` file stays small so it only starts the command-line workflow.
 
-This structure makes the project easier to test and easier to extend. For example, a future interactive app can reuse the same analysis functions without rewriting the CSV validation or chart logic.
+This structure makes the project easier to test and easier to extend. The Streamlit app reuses the same validation, filtering, analysis, and chart code as the static report instead of creating a separate dashboard implementation.
 
 ## Notes
 
@@ -128,9 +138,18 @@ See `CHANGELOG.md`.
 3. Confirm the terminal no longer shows `matplotlib.category` INFO messages.
 4. Open the dashboard and confirm the monthly revenue chart still uses readable month labels.
 
+## Iteration 2 Test Steps
+
+1. Run `pip install -r requirements.txt`.
+2. Run `python -m unittest discover -s tests`.
+3. Run `python sales_dashboard.py`.
+4. Run `streamlit run streamlit_app.py`.
+5. Upload a compatible sales CSV or use the default sample data.
+6. Change date, category, region, and product filters.
+7. Confirm KPI cards, charts, and tables update with the selected filters.
+
 ## Next Iteration Suggestions
 
-- Add an interactive Streamlit interface with CSV upload, filters for date range and region, and live chart updates.
+- Add GitHub Actions so tests run automatically on every push.
 - Add export options for dashboard images and summary tables.
 - Add a richer data quality report for missing values, negative quantities, duplicate order IDs, and outlier prices.
-- Add GitHub Actions so tests run automatically on every push.

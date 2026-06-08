@@ -36,15 +36,14 @@ def style_chart(ax: plt.Axes, title: str) -> None:
     ax.set_axisbelow(True)
 
 
-def save_monthly_chart(df: pd.DataFrame, path: Path) -> None:
-    """Save the monthly revenue trend chart.
+def create_monthly_chart(df: pd.DataFrame) -> plt.Figure:
+    """Create the monthly revenue trend chart.
 
     Parameters:
         df: Validated sales DataFrame.
-        path: Output image path.
 
     Returns:
-        None.
+        Matplotlib figure.
     """
 
     monthly = monthly_revenue(df)
@@ -62,8 +61,44 @@ def save_monthly_chart(df: pd.DataFrame, path: Path) -> None:
     ax.yaxis.set_major_formatter(lambda value, _: currency(value))
     style_chart(ax, "Revenue Trend by Month")
     fig.tight_layout()
+    return fig
+
+
+def save_monthly_chart(df: pd.DataFrame, path: Path) -> None:
+    """Save the monthly revenue trend chart.
+
+    Parameters:
+        df: Validated sales DataFrame.
+        path: Output image path.
+
+    Returns:
+        None.
+    """
+
+    fig = create_monthly_chart(df)
     fig.savefig(path, dpi=CHART_DPI)
     plt.close(fig)
+
+
+def create_top_products_chart(df: pd.DataFrame, limit: int) -> plt.Figure:
+    """Create the top products revenue chart.
+
+    Parameters:
+        df: Validated sales DataFrame.
+        limit: Number of products to include.
+
+    Returns:
+        Matplotlib figure.
+    """
+
+    products = top_products(df, limit=limit).sort_values("revenue")
+    fig, ax = plt.subplots(figsize=(10, 5.5))
+    ax.barh(products["product"], products["revenue"], color=CHART_COLORS["products"])
+    ax.set_xlabel("Revenue")
+    ax.xaxis.set_major_formatter(lambda value, _: currency(value))
+    style_chart(ax, f"Top {limit} Products by Revenue")
+    fig.tight_layout()
+    return fig
 
 
 def save_top_products_chart(df: pd.DataFrame, path: Path, limit: int) -> None:
@@ -78,26 +113,19 @@ def save_top_products_chart(df: pd.DataFrame, path: Path, limit: int) -> None:
         None.
     """
 
-    products = top_products(df, limit=limit).sort_values("revenue")
-    fig, ax = plt.subplots(figsize=(10, 5.5))
-    ax.barh(products["product"], products["revenue"], color=CHART_COLORS["products"])
-    ax.set_xlabel("Revenue")
-    ax.xaxis.set_major_formatter(lambda value, _: currency(value))
-    style_chart(ax, f"Top {limit} Products by Revenue")
-    fig.tight_layout()
+    fig = create_top_products_chart(df, limit)
     fig.savefig(path, dpi=CHART_DPI)
     plt.close(fig)
 
 
-def save_category_chart(df: pd.DataFrame, path: Path) -> None:
-    """Save the category revenue mix chart.
+def create_category_chart(df: pd.DataFrame) -> plt.Figure:
+    """Create the category revenue mix chart.
 
     Parameters:
         df: Validated sales DataFrame.
-        path: Output image path.
 
     Returns:
-        None.
+        Matplotlib figure.
     """
 
     categories = revenue_breakdown(df, "category")
@@ -111,8 +139,43 @@ def save_category_chart(df: pd.DataFrame, path: Path) -> None:
     )
     ax.set_title("Revenue Mix by Category", fontsize=14, fontweight="bold", pad=14)
     fig.tight_layout()
+    return fig
+
+
+def save_category_chart(df: pd.DataFrame, path: Path) -> None:
+    """Save the category revenue mix chart.
+
+    Parameters:
+        df: Validated sales DataFrame.
+        path: Output image path.
+
+    Returns:
+        None.
+    """
+
+    fig = create_category_chart(df)
     fig.savefig(path, dpi=CHART_DPI)
     plt.close(fig)
+
+
+def create_region_chart(df: pd.DataFrame) -> plt.Figure:
+    """Create the region revenue chart.
+
+    Parameters:
+        df: Validated sales DataFrame.
+
+    Returns:
+        Matplotlib figure.
+    """
+
+    regions = revenue_breakdown(df, "region")
+    fig, ax = plt.subplots(figsize=(8, 5.5))
+    ax.bar(regions["region"], regions["revenue"], color=CHART_COLORS["regions"])
+    ax.set_ylabel("Revenue")
+    ax.yaxis.set_major_formatter(lambda value, _: currency(value))
+    style_chart(ax, "Revenue by Region")
+    fig.tight_layout()
+    return fig
 
 
 def save_region_chart(df: pd.DataFrame, path: Path) -> None:
@@ -126,12 +189,6 @@ def save_region_chart(df: pd.DataFrame, path: Path) -> None:
         None.
     """
 
-    regions = revenue_breakdown(df, "region")
-    fig, ax = plt.subplots(figsize=(8, 5.5))
-    ax.bar(regions["region"], regions["revenue"], color=CHART_COLORS["regions"])
-    ax.set_ylabel("Revenue")
-    ax.yaxis.set_major_formatter(lambda value, _: currency(value))
-    style_chart(ax, "Revenue by Region")
-    fig.tight_layout()
+    fig = create_region_chart(df)
     fig.savefig(path, dpi=CHART_DPI)
     plt.close(fig)
