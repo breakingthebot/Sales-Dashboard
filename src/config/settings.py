@@ -8,9 +8,10 @@ from pathlib import Path
 
 DEFAULT_CSV_PATH = Path("data/sample_sales.csv")
 DEFAULT_OUTPUT_DIR = Path("reports/sales_dashboard")
+DEFAULT_TEMPLATE_PATH = Path("data/sales_template.csv")
 DEFAULT_TOP_PRODUCT_LIMIT = 5
 
-REQUIRED_COLUMNS = {
+REQUIRED_COLUMNS = (
     "order_date",
     "order_id",
     "product",
@@ -18,7 +19,7 @@ REQUIRED_COLUMNS = {
     "region",
     "quantity",
     "unit_price",
-}
+)
 
 CHART_DPI = 160
 CHART_COLORS = {

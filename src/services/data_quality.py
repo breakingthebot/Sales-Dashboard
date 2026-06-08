@@ -123,7 +123,7 @@ def analyze_sales_quality(df: pd.DataFrame) -> pd.DataFrame:
         DataFrame of quality checks, statuses, issue counts, and guidance.
     """
 
-    missing_columns = sorted(REQUIRED_COLUMNS - set(df.columns))
+    missing_columns = sorted(set(REQUIRED_COLUMNS) - set(df.columns))
     null_required_count = (
         int(df[list(REQUIRED_COLUMNS)].isna().sum().sum())
         if not missing_columns

@@ -36,6 +36,7 @@ The point of this build is to make raw sales records easier to understand quickl
 |-- tests/
 |   `-- test_sales_dashboard.py
 |-- sales_dashboard.py
+|-- generate_sales_csv.py
 |-- streamlit_app.py
 |-- CHANGELOG.md
 |-- .env.example
@@ -96,6 +97,18 @@ Run the interactive dashboard:
 
 ```powershell
 streamlit run streamlit_app.py
+```
+
+Generate a blank fill-in CSV template:
+
+```powershell
+python generate_sales_csv.py
+```
+
+Generate a template with example rows:
+
+```powershell
+python generate_sales_csv.py --with-sample-rows
 ```
 
 ## Testing
@@ -167,7 +180,18 @@ See `CHANGELOG.md`.
 5. Download the monthly, top products, category, and region chart PNG files.
 6. Open the downloaded files and confirm they match the filtered dashboard state.
 
+## Iteration 5 Test Steps
+
+1. Run `python -m unittest discover -s tests`.
+2. Run `python generate_sales_csv.py`.
+3. Confirm `data/sales_template.csv` is created with the required headers.
+4. Run `python generate_sales_csv.py --with-sample-rows`.
+5. Confirm the generated template includes example rows.
+6. Run `streamlit run streamlit_app.py`.
+7. Upload a CSV with different column names and map each field in the column mapping panel.
+8. Confirm the dashboard loads after mapping.
+
 ## Next Iteration Suggestions
 
 - Add GitHub Actions so tests run automatically on every push.
-- Add CSV column mapping so files with different header names can be matched to the required sales fields.
+- Add an in-app download button for the blank sales CSV template.

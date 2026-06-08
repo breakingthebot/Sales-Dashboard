@@ -9,13 +9,19 @@ import pandas as pd
 import streamlit as st
 
 from src.components.filters import apply_sales_filters
-from src.config.settings import DEFAULT_CSV_PATH, DEFAULT_TOP_PRODUCT_LIMIT
+from src.config.settings import DEFAULT_CSV_PATH, DEFAULT_TOP_PRODUCT_LIMIT, REQUIRED_COLUMNS
 from src.services.analysis import revenue_breakdown, summarize_sales, top_products
 from src.services.charts import (
     create_category_chart,
     create_monthly_chart,
     create_region_chart,
     create_top_products_chart,
+)
+from src.services.column_mapping import (
+    NO_COLUMN_SELECTED,
+    apply_column_mapping,
+    default_column_mapping,
+    needs_column_mapping,
 )
 from src.services.data_quality import analyze_sales_quality
 from src.services.data_loader import validate_sales_data
@@ -74,6 +80,38 @@ def render_quality_report(raw_df: pd.DataFrame) -> None:
             file_name="sales_data_quality_report.csv",
             mime="text/csv",
         )
+
+
+def render_column_mapping(raw_df: pd.DataFrame) -> pd.DataFrame:
+    """Render uploaded CSV column mapping controls.
+
+    Parameters:
+        raw_df: Uploaded raw sales DataFrame.
+
+    Returns:
+        Raw DataFrame with required dashboard column names.
+    """
+
+    if not needs_column_mapping(raw_df):
+        return raw_df
+
+    st.info("Map your uploaded CSV columns to the required dashboard fields.")
+    default_mapping = default_column_mapping(raw_df)
+    column_options = [NO_COLUMN_SELECTED, *raw_df.columns.tolist()]
+    mapping = {}
+
+    with st.expander("Column mapping", expanded=True):
+        for required_column in REQUIRED_COLUMNS:
+            default_value = default_mapping.get(required_column, NO_COLUMN_SELECTED)
+            default_index = column_options.index(default_value)
+            mapping[required_column] = st.selectbox(
+                required_column,
+                column_options,
+                index=default_index,
+                key=f"mapping_{required_column}",
+            )
+
+    return apply_column_mapping(raw_df, mapping)
 
 
 def render_metrics(df: pd.DataFrame) -> None:
@@ -231,8 +269,9 @@ def main() -> None:
             if uploaded_file
             else load_default_raw_data(DEFAULT_CSV_PATH)
         )
-        render_quality_report(raw_df)
-        df = validate_sales_data(raw_df)
+        mapped_df = render_column_mapping(raw_df) if uploaded_file else raw_df
+        render_quality_report(mapped_df)
+        df = validate_sales_data(mapped_df)
     except ValueError as error:
         st.error(str(error))
         return

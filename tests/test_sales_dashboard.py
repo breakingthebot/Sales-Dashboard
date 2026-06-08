@@ -6,11 +6,14 @@ import unittest
 import pandas as pd
 
 from src.components.filters import apply_sales_filters
+from src.config.settings import REQUIRED_COLUMNS
+from src.services.column_mapping import apply_column_mapping, needs_column_mapping
 from src.services.analysis import monthly_revenue, summarize_sales, top_products
 from src.services.data_quality import analyze_sales_quality
 from src.services.data_loader import load_sales_data, validate_sales_data
 from src.services.exporting import dataframe_to_csv_bytes, figure_to_png_bytes
 from src.services.charts import create_monthly_chart
+from src.services.template_generator import build_template_dataframe, generate_sales_template
 
 
 class SalesDashboardTestCase(unittest.TestCase):
@@ -169,6 +172,57 @@ class SalesDashboardTestCase(unittest.TestCase):
         png_bytes = figure_to_png_bytes(create_monthly_chart(load_sales_data(path)))
 
         self.assertTrue(png_bytes.startswith(b"\x89PNG"))
+
+    def test_apply_column_mapping_renames_uploaded_headers(self):
+        raw_df = pd.DataFrame(
+            [
+                {
+                    "Date": "2025-01-01",
+                    "Order": "SO-1",
+                    "Item": "Laptop",
+                    "Group": "Computers",
+                    "Area": "West",
+                    "Count": 2,
+                    "Price": 1000,
+                }
+            ]
+        )
+        mapping = {
+            "order_date": "Date",
+            "order_id": "Order",
+            "product": "Item",
+            "category": "Group",
+            "region": "Area",
+            "quantity": "Count",
+            "unit_price": "Price",
+        }
+
+        mapped = apply_column_mapping(raw_df, mapping)
+
+        self.assertFalse(needs_column_mapping(mapped))
+        self.assertEqual(mapped.loc[0, "order_id"], "SO-1")
+
+    def test_apply_column_mapping_rejects_missing_mapping(self):
+        raw_df = pd.DataFrame({"Date": ["2025-01-01"]})
+
+        with self.assertRaisesRegex(ValueError, "missing required fields"):
+            apply_column_mapping(raw_df, {"order_date": "Date"})
+
+    def test_build_template_dataframe_uses_required_columns(self):
+        template = build_template_dataframe(include_sample_rows=False)
+
+        self.assertEqual(template.columns.tolist(), list(REQUIRED_COLUMNS))
+        self.assertTrue(template.empty)
+
+    def test_generate_sales_template_writes_csv(self):
+        temp_dir = tempfile.TemporaryDirectory()
+        self.addCleanup(temp_dir.cleanup)
+        output_path = Path(temp_dir.name) / "template.csv"
+
+        generated_path = generate_sales_template(output_path, include_sample_rows=True)
+
+        self.assertEqual(generated_path, output_path)
+        self.assertIn("Example Product A", output_path.read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

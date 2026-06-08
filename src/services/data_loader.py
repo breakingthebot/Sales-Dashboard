@@ -27,7 +27,7 @@ def validate_sales_data(df: pd.DataFrame) -> pd.DataFrame:
         ValueError: If required columns or values are invalid.
     """
 
-    missing_columns = REQUIRED_COLUMNS - set(df.columns)
+    missing_columns = set(REQUIRED_COLUMNS) - set(df.columns)
     if missing_columns:
         missing = ", ".join(sorted(missing_columns))
         raise ValueError(f"CSV is missing required columns: {missing}")

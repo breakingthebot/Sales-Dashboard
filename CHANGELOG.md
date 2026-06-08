@@ -53,3 +53,12 @@
 - Added CSV exports for filtered rows, top products, region revenue, and the data quality report.
 - Added PNG exports for monthly revenue, top products, category mix, and region revenue charts.
 - Added reusable export helpers and tests for CSV and PNG export output.
+
+## Iteration 5 - 2026-06-08
+
+### Added
+
+- Added CSV column mapping for uploaded files with different header names.
+- Added a sales CSV template generator script.
+- Added support for blank templates and templates with example rows.
+- Added tests for column mapping and template generation.
