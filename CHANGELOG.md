@@ -89,3 +89,9 @@
 
 - Added Streamlit runtime configuration for local and hosted app runs.
 - Added deployment entry point notes to the README.
+
+## Iteration 10 - 2026-06-08
+
+### Added
+
+- Added a deployment guide with pre-deploy checks, Streamlit hosting notes, and post-deploy validation steps.

@@ -37,6 +37,7 @@ The point of this build is to make raw sales records easier to understand quickl
 |-- data/
 |   `-- sample_sales.csv
 |-- docs/
+|   |-- DEPLOYMENT.md
 |   `-- assets/
 |-- .github/
 |   `-- workflows/
@@ -157,6 +158,8 @@ Requirements: requirements.txt
 
 The app does not require environment variables or secrets.
 
+See `docs/DEPLOYMENT.md` for the deployment checklist and post-deploy validation steps.
+
 ## Architecture Notes
 
 The build is split into small modules so each part has one job. CSV validation lives in the data loader, sales calculations live in the analysis service, chart rendering lives in the charts service, exports live in the export service, filtering lives in a small component helper, and report creation lives in the report service. The root `sales_dashboard.py` file stays small so it only starts the command-line workflow.
@@ -254,6 +257,13 @@ See `CHANGELOG.md`.
 2. Run `streamlit run streamlit_app.py`.
 3. Confirm the app opens with the light theme.
 4. Confirm the README deployment section lists `streamlit_app.py` as the main file.
+
+## Iteration 9 Test Steps
+
+1. Open `docs/DEPLOYMENT.md`.
+2. Confirm it lists `streamlit_app.py` as the app entry point.
+3. Confirm it includes pre-deploy and post-deploy validation steps.
+4. Run `python -m unittest discover -s tests`.
 
 ## Next Iteration Suggestions
 
