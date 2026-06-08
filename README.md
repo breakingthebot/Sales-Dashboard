@@ -15,6 +15,7 @@ The point of this build is to make raw sales records easier to understand quickl
 ## Features
 
 - Validates required CSV fields before analysis.
+- Reports data quality issues before dashboard validation.
 - Calculates total revenue, total orders, units sold, average order value, and top product.
 - Builds monthly revenue trends, top product rankings, category mix, and regional revenue charts.
 - Generates a responsive `index.html` report.
@@ -110,7 +111,7 @@ Not deployed. This build currently generates a local static HTML report.
 
 The build is split into small modules so each part has one job. CSV validation lives in the data loader, sales calculations live in the analysis service, chart rendering lives in the charts service, filtering lives in a small component helper, and report creation lives in the report service. The root `sales_dashboard.py` file stays small so it only starts the command-line workflow.
 
-This structure makes the project easier to test and easier to extend. The Streamlit app reuses the same validation, filtering, analysis, and chart code as the static report instead of creating a separate dashboard implementation.
+This structure makes the project easier to test and easier to extend. The Streamlit app reuses the same validation, data quality, filtering, analysis, and chart code as the static report instead of creating a separate dashboard implementation.
 
 ## Notes
 
@@ -148,8 +149,16 @@ See `CHANGELOG.md`.
 6. Change date, category, region, and product filters.
 7. Confirm KPI cards, charts, and tables update with the selected filters.
 
+## Iteration 3 Test Steps
+
+1. Run `python -m unittest discover -s tests`.
+2. Run `streamlit run streamlit_app.py`.
+3. Confirm the default sample data shows `Data quality checks passed.`
+4. Upload a CSV with a duplicate `order_id`, a bad date, a negative quantity, or a zero `unit_price`.
+5. Confirm the data quality report opens and shows the issue counts.
+
 ## Next Iteration Suggestions
 
 - Add GitHub Actions so tests run automatically on every push.
 - Add export options for dashboard images and summary tables.
-- Add a richer data quality report for missing values, negative quantities, duplicate order IDs, and outlier prices.
+- Add CSV column mapping so files with different header names can be matched to the required sales fields.

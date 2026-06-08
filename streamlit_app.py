@@ -17,34 +17,56 @@ from src.services.charts import (
     create_region_chart,
     create_top_products_chart,
 )
+from src.services.data_quality import analyze_sales_quality
 from src.services.data_loader import validate_sales_data
 from src.utils.formatting import currency
 
 
-def load_default_data(csv_path: Path) -> pd.DataFrame:
+def load_default_raw_data(csv_path: Path) -> pd.DataFrame:
     """Load the bundled sample CSV for the Streamlit app.
 
     Parameters:
         csv_path: Path to the bundled sample CSV.
 
     Returns:
-        Validated sales DataFrame.
+        Raw sales DataFrame.
     """
 
-    return validate_sales_data(pd.read_csv(csv_path))
+    return pd.read_csv(csv_path)
 
 
-def load_uploaded_data(uploaded_file) -> pd.DataFrame:
+def load_uploaded_raw_data(uploaded_file) -> pd.DataFrame:
     """Load a Streamlit-uploaded CSV file.
 
     Parameters:
         uploaded_file: Uploaded CSV file-like object.
 
     Returns:
-        Validated sales DataFrame.
+        Raw sales DataFrame.
     """
 
-    return validate_sales_data(pd.read_csv(uploaded_file))
+    return pd.read_csv(uploaded_file)
+
+
+def render_quality_report(raw_df: pd.DataFrame) -> None:
+    """Render a raw CSV data quality report.
+
+    Parameters:
+        raw_df: Raw sales DataFrame.
+
+    Returns:
+        None.
+    """
+
+    report = analyze_sales_quality(raw_df)
+    issue_count = int(report["issues"].sum())
+    if issue_count == 0:
+        st.success("Data quality checks passed.")
+    else:
+        st.warning(f"Data quality checks found {issue_count} issue(s) to review.")
+
+    with st.expander("Data quality report", expanded=issue_count > 0):
+        st.dataframe(report, use_container_width=True)
 
 
 def render_metrics(df: pd.DataFrame) -> None:
@@ -145,7 +167,13 @@ def main() -> None:
 
     uploaded_file = st.sidebar.file_uploader("Upload sales CSV", type=["csv"])
     try:
-        df = load_uploaded_data(uploaded_file) if uploaded_file else load_default_data(DEFAULT_CSV_PATH)
+        raw_df = (
+            load_uploaded_raw_data(uploaded_file)
+            if uploaded_file
+            else load_default_raw_data(DEFAULT_CSV_PATH)
+        )
+        render_quality_report(raw_df)
+        df = validate_sales_data(raw_df)
     except ValueError as error:
         st.error(str(error))
         return

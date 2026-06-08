@@ -36,3 +36,12 @@
 ### Changed
 
 - Updated chart functions so the static report and Streamlit app can reuse the same matplotlib figure builders.
+
+## Iteration 3 - 2026-06-08
+
+### Added
+
+- Added a data quality report for raw sales CSV files.
+- Added checks for missing required columns, blank required values, invalid dates, invalid numbers, negative quantities, nonpositive unit prices, duplicate order IDs, and invalid revenue values.
+- Added Streamlit display for the data quality report.
+- Added tests for data quality issue detection.

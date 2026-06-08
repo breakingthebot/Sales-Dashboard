@@ -7,6 +7,7 @@ import pandas as pd
 
 from src.components.filters import apply_sales_filters
 from src.services.analysis import monthly_revenue, summarize_sales, top_products
+from src.services.data_quality import analyze_sales_quality
 from src.services.data_loader import load_sales_data, validate_sales_data
 
 
@@ -111,6 +112,45 @@ class SalesDashboardTestCase(unittest.TestCase):
         )
 
         self.assertEqual(filtered["order_id"].tolist(), ["SO-2"])
+
+    def test_analyze_sales_quality_flags_common_issues(self):
+        df = pd.DataFrame(
+            [
+                {
+                    "order_date": "not-a-date",
+                    "order_id": "SO-1",
+                    "product": "Laptop",
+                    "category": "Computers",
+                    "region": "West",
+                    "quantity": -2,
+                    "unit_price": 0,
+                },
+                {
+                    "order_date": "2025-01-02",
+                    "order_id": "SO-1",
+                    "product": "Mouse",
+                    "category": "Accessories",
+                    "region": "East",
+                    "quantity": 5,
+                    "unit_price": 20,
+                },
+            ]
+        )
+
+        report = analyze_sales_quality(df).set_index("check")
+
+        self.assertEqual(report.loc["Invalid order dates", "issues"], 1)
+        self.assertEqual(report.loc["Negative quantities", "issues"], 1)
+        self.assertEqual(report.loc["Nonpositive unit prices", "issues"], 1)
+        self.assertEqual(report.loc["Duplicate order IDs", "issues"], 1)
+
+    def test_analyze_sales_quality_flags_missing_columns(self):
+        report = analyze_sales_quality(pd.DataFrame({"order_date": ["2025-01-01"]}))
+
+        required_columns = report.set_index("check").loc["Required columns"]
+
+        self.assertEqual(required_columns["status"], "Review")
+        self.assertGreater(required_columns["issues"], 0)
 
 
 if __name__ == "__main__":

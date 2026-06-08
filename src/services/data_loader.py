@@ -33,7 +33,7 @@ def validate_sales_data(df: pd.DataFrame) -> pd.DataFrame:
         raise ValueError(f"CSV is missing required columns: {missing}")
 
     df = df.copy()
-    df["order_date"] = pd.to_datetime(df["order_date"], errors="coerce")
+    df["order_date"] = pd.to_datetime(df["order_date"], errors="coerce", format="mixed")
     if df["order_date"].isna().any():
         raise ValueError("CSV contains invalid order_date values.")
 
