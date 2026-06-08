@@ -38,6 +38,8 @@ The point of this build is to make raw sales records easier to understand quickl
 |   `-- sample_sales.csv
 |-- docs/
 |   `-- assets/
+|-- .github/
+|   `-- workflows/
 |-- scripts/
 |   `-- create_readme_assets.py
 |-- tests/
@@ -136,6 +138,10 @@ python generate_sales_csv.py --blank-template
 python -m unittest discover -s tests
 ```
 
+## Automated Checks
+
+GitHub Actions runs the test workflow on branch pushes and pull requests to `main`. The workflow installs dependencies, runs the unit tests, and generates the static dashboard to confirm the command-line build still works.
+
 ## Deployed
 
 Not deployed. This build currently generates a local static HTML report.
@@ -233,5 +239,4 @@ See `CHANGELOG.md`.
 
 ## Next Iteration Suggestions
 
-- Add GitHub Actions so tests run automatically on every push.
 - Add a short deployed-app section once the app has a public URL.

@@ -76,3 +76,9 @@
 
 - Added a README workflow image for the Streamlit dashboard experience.
 - Added a script for regenerating README visual assets.
+
+## Iteration 8 - 2026-06-08
+
+### Added
+
+- Added a GitHub Actions workflow for automated tests and dashboard generation.
