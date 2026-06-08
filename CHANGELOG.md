@@ -82,3 +82,10 @@
 ### Added
 
 - Added a GitHub Actions workflow for automated tests and dashboard generation.
+
+## Iteration 9 - 2026-06-08
+
+### Added
+
+- Added Streamlit runtime configuration for local and hosted app runs.
+- Added deployment entry point notes to the README.

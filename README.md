@@ -40,6 +40,8 @@ The point of this build is to make raw sales records easier to understand quickl
 |   `-- assets/
 |-- .github/
 |   `-- workflows/
+|-- .streamlit/
+|   `-- config.toml
 |-- scripts/
 |   `-- create_readme_assets.py
 |-- tests/
@@ -144,7 +146,16 @@ GitHub Actions runs the test workflow on branch pushes and pull requests to `mai
 
 ## Deployed
 
-Not deployed. This build currently generates a local static HTML report.
+Not deployed yet.
+
+For Streamlit hosting, use:
+
+```text
+Main file: streamlit_app.py
+Requirements: requirements.txt
+```
+
+The app does not require environment variables or secrets.
 
 ## Architecture Notes
 
@@ -237,6 +248,13 @@ See `CHANGELOG.md`.
 3. Open `README.md` in GitHub preview or VS Code preview.
 4. Confirm the Streamlit workflow image renders near the top of the README.
 
+## Iteration 8 Test Steps
+
+1. Run `python -m unittest discover -s tests`.
+2. Run `streamlit run streamlit_app.py`.
+3. Confirm the app opens with the light theme.
+4. Confirm the README deployment section lists `streamlit_app.py` as the main file.
+
 ## Next Iteration Suggestions
 
-- Add a short deployed-app section once the app has a public URL.
+- Add the deployed app URL once hosting is complete.
