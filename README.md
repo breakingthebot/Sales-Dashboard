@@ -99,16 +99,28 @@ Run the interactive dashboard:
 streamlit run streamlit_app.py
 ```
 
-Generate a blank fill-in CSV template:
+Generate random sales data for upload testing:
 
 ```powershell
 python generate_sales_csv.py
 ```
 
-Generate a template with example rows:
+Control the number of generated rows:
 
 ```powershell
-python generate_sales_csv.py --with-sample-rows
+python generate_sales_csv.py --rows 100
+```
+
+Generate repeatable test data:
+
+```powershell
+python generate_sales_csv.py --rows 100 --seed 42
+```
+
+Generate a blank fill-in CSV template:
+
+```powershell
+python generate_sales_csv.py --blank-template
 ```
 
 ## Testing
@@ -184,14 +196,18 @@ See `CHANGELOG.md`.
 
 1. Run `python -m unittest discover -s tests`.
 2. Run `python generate_sales_csv.py`.
-3. Confirm `data/sales_template.csv` is created with the required headers.
-4. Run `python generate_sales_csv.py --with-sample-rows`.
-5. Confirm the generated template includes example rows.
-6. Run `streamlit run streamlit_app.py`.
-7. Upload a CSV with different column names and map each field in the column mapping panel.
-8. Confirm the dashboard loads after mapping.
+3. Confirm `data/generated_sales.csv` is created with randomized rows.
+4. Run `python generate_sales_csv.py --rows 100 --seed 42`.
+5. Confirm the generated file has 100 rows and the standard dashboard headers.
+6. Run `python generate_sales_csv.py --blank-template`.
+7. Confirm `data/sales_template.csv` is created with only the required headers.
+8. Run `streamlit run streamlit_app.py`.
+9. Upload `data/generated_sales.csv`.
+10. Confirm the dashboard loads.
+11. Upload a CSV with different column names and map each field in the column mapping panel.
+12. Confirm the dashboard loads after mapping.
 
 ## Next Iteration Suggestions
 
 - Add GitHub Actions so tests run automatically on every push.
-- Add an in-app download button for the blank sales CSV template.
+- Add an in-app download button for generated sample data and the blank sales CSV template.

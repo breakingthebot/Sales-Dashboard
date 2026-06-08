@@ -14,6 +14,7 @@ from src.services.data_loader import load_sales_data, validate_sales_data
 from src.services.exporting import dataframe_to_csv_bytes, figure_to_png_bytes
 from src.services.charts import create_monthly_chart
 from src.services.template_generator import build_template_dataframe, generate_sales_template
+from src.services.template_generator import build_random_sales_dataframe, generate_random_sales_csv
 
 
 class SalesDashboardTestCase(unittest.TestCase):
@@ -209,20 +210,42 @@ class SalesDashboardTestCase(unittest.TestCase):
             apply_column_mapping(raw_df, {"order_date": "Date"})
 
     def test_build_template_dataframe_uses_required_columns(self):
-        template = build_template_dataframe(include_sample_rows=False)
+        template = build_template_dataframe()
 
         self.assertEqual(template.columns.tolist(), list(REQUIRED_COLUMNS))
         self.assertTrue(template.empty)
 
-    def test_generate_sales_template_writes_csv(self):
+    def test_generate_sales_template_writes_blank_csv(self):
         temp_dir = tempfile.TemporaryDirectory()
         self.addCleanup(temp_dir.cleanup)
         output_path = Path(temp_dir.name) / "template.csv"
 
-        generated_path = generate_sales_template(output_path, include_sample_rows=True)
+        generated_path = generate_sales_template(output_path)
 
         self.assertEqual(generated_path, output_path)
-        self.assertIn("Example Product A", output_path.read_text(encoding="utf-8"))
+        self.assertEqual(output_path.read_text(encoding="utf-8").strip(), ",".join(REQUIRED_COLUMNS))
+
+    def test_build_random_sales_dataframe_creates_valid_rows(self):
+        generated = build_random_sales_dataframe(row_count=10, seed=42)
+
+        self.assertEqual(len(generated), 10)
+        self.assertEqual(generated.columns.tolist(), list(REQUIRED_COLUMNS))
+        self.assertEqual(generated["order_id"].nunique(), 10)
+        self.assertFalse(validate_sales_data(generated).empty)
+
+    def test_build_random_sales_dataframe_rejects_zero_rows(self):
+        with self.assertRaisesRegex(ValueError, "at least 1"):
+            build_random_sales_dataframe(row_count=0)
+
+    def test_generate_random_sales_csv_writes_random_rows(self):
+        temp_dir = tempfile.TemporaryDirectory()
+        self.addCleanup(temp_dir.cleanup)
+        output_path = Path(temp_dir.name) / "generated.csv"
+
+        generated_path = generate_random_sales_csv(output_path, row_count=5, seed=7)
+
+        self.assertEqual(generated_path, output_path)
+        self.assertEqual(len(pd.read_csv(output_path)), 5)
 
 
 if __name__ == "__main__":

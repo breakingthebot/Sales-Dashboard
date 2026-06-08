@@ -59,6 +59,6 @@
 ### Added
 
 - Added CSV column mapping for uploaded files with different header names.
-- Added a sales CSV template generator script.
-- Added support for blank templates and templates with example rows.
+- Added a random sales CSV generator script for upload testing.
+- Added support for row counts, optional random seeds, and blank templates.
 - Added tests for column mapping and template generation.
