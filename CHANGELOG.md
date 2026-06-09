@@ -108,3 +108,9 @@
 
 - Removed topic notes and iteration test-step history from the README.
 - Kept iteration history in the changelog so the README stays focused on project usage.
+
+## Iteration 13 - 2026-06-08
+
+### Added
+
+- Added the deployed Streamlit app URL to the README and deployment guide.

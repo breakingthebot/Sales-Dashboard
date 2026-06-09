@@ -147,7 +147,7 @@ GitHub Actions runs the test workflow on branch pushes and pull requests to `mai
 
 ## Deployed
 
-Not deployed yet.
+Live app: https://sales-dashboard-b6bdiftbheiwl5grx4ty9x.streamlit.app/
 
 For Streamlit hosting, use:
 
@@ -178,4 +178,4 @@ See `CHANGELOG.md`.
 
 ## Next Iteration Suggestions
 
-- Add the deployed app URL once hosting is complete.
+- Add a short usage note after the deployed app has been tested with real sales CSV data.

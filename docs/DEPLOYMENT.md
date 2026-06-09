@@ -55,4 +55,8 @@ After the app is deployed:
 
 ## Public URL
 
-Add the deployed URL to the README when hosting is complete.
+The deployed app is available at:
+
+```text
+https://sales-dashboard-b6bdiftbheiwl5grx4ty9x.streamlit.app/
+```
