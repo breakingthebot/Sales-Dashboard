@@ -101,3 +101,10 @@
 ### Added
 
 - Added README topic notes explaining how each GitHub topic applies to the build.
+
+## Iteration 12 - 2026-06-08
+
+### Changed
+
+- Removed topic notes and iteration test-step history from the README.
+- Kept iteration history in the changelog so the README stays focused on project usage.
